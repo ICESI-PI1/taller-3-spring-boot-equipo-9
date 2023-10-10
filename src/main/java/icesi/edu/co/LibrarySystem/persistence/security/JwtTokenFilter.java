@@ -1,18 +1,19 @@
 package icesi.edu.co.LibrarySystem.persistence.security;
 
-import com.google.auth.oauth2.JwtClaims;
+import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.algorithms.Algorithm;
+import com.nimbusds.jwt.interfaces.DecodedJWT;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Component;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-@Component
-@Order(1)
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+
 public class JwtTokenFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
@@ -22,27 +23,22 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
-        // Get the token from the request
-        String token = request.getHeader("Authorization");
-        if (token != null && token.startsWith("Bearer ")) {
-            // Remove the Bearer prefix
-            token = token.substring(7);
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        // Get the bearer token from the request header
+        String bearerToken = request.getHeader(AUTHORIZATION);
 
-            try {
-                // Validate the token
-                JwtClaims claims = jwtTokenProvider.parseToken(token);
+        // Validate the token
+        DecodedJWT decodedJwt = jwtTokenProvider.validateToken(bearerToken);
 
-                // Add the claims to the security context
-                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                        claims.getSubject(), null, claims.getAuthorities());
-                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-            } catch (Exception e) {
-                // Ignore invalid tokens
-            }
-        }
+        // Set the user in the security context
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken(
+                        decodedJwt.getSubject(),
+                        null,
+                        decodedJwt.getClaims().get("authorities")
+                )
+        );
 
-        chain.doFilter(request, response);
+        filterChain.doFilter(request, response);
     }
-
 }

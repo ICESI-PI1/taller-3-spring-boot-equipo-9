@@ -11,6 +11,8 @@ import java.security.KeyStore;
 import java.util.Date;
 import java.util.List;
 
+import com.nimbusds.jwt.JWTClaimsSet;
+
 public class JwtTokenProvider {
 
     private final KeyStore keyStore;
@@ -21,24 +23,25 @@ public class JwtTokenProvider {
 
     public String generateToken(String username, List<String> authorities) throws Exception {
         // Create JWT claims
-        JwtClaims claims = JwtClaims.newBuilder()
-                .setSubject(username)
-                .authorities(authorities)
+        JWTClaimsSet claims = new JWTClaimsSet.Builder()
                 .issuer("Bookstore API")
                 .audience("Bookstore App")
-                .expiration(new Date(System.currentTime Millis() + 1000 * 60 * 60)) // 1 hour
+                .claim("exp", new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 1 hour
+                .subject(username)
+                .claim("authorities", authorities)
                 .build();
 
         // Create JWT signing key
         Key key = keyStore.getKey("jwt", "password".toCharArray());
 
         // Sign the JWT
-        JwtBuilder jwtBuilder = Jwts.builder()
-                .setClaims((Claims) claims)
-                .signWith(SignatureAlgorithm.RS256, key);
+        JwtBuilder jwtBuilder = Jwts.builder().signWith(SignatureAlgorithm.RS256, key);
 
         // Create and return the token
         return jwtBuilder.compact();
     }
-
 }
+
+
+
+
