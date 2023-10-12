@@ -19,20 +19,23 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     private final JwtTokenProvider jwtTokenProvider;
 
     public JwtTokenFilter(JwtTokenProvider jwtTokenProvider) {
+
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        // Get the bearer token from the request header
+
         String bearerToken = request.getHeader(AUTHORIZATION);
 
         // Validate the token
         DecodedJWT decodedJwt = jwtTokenProvider.validateToken(bearerToken);
 
-        // Set the user in the security context
+
         SecurityContextHolder.getContext().setAuthentication(
-                new UsernamePasswordAuthenticationToken(
+
+                new UsernamePasswordAuthenticationToken (
                         decodedJwt.getSubject(),
                         null,
                         decodedJwt.getClaims().get("authorities")
