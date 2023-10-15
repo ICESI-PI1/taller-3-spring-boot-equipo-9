@@ -16,10 +16,10 @@ public class SecurityConfig extends WebSecurityConfiguration {
 
 
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        // Configura la autenticación, por ejemplo, en memoria:
+
         auth.inMemoryAuthentication()
-                .withUser("usuario")
-                .password("{noop}contraseña") // La contraseña debe estar encriptada, pero esto es solo un ejemplo
+                .withUser("user")
+                .password("santiago")
                 .roles("USER");
     }
 

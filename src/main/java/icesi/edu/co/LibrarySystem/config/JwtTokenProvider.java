@@ -12,7 +12,7 @@ import java.util.List;
 @Component
 public class JwtTokenProvider {
 
-    private String secretKey = "tu-secreto"; // Debe ser una clave segura y no debe revelarse
+    private String secretKey = "tu-secreto";
     private long validityInMilliseconds = 3600000; // 1 hora
 
     public String createToken(String username, List<String> roles) {
@@ -51,12 +51,12 @@ public class JwtTokenProvider {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }
 
-    // Implementa lógica para obtener los roles del usuario
+
     public List<String> getUserRoles(String username) {
         // Supongamos una lista de roles predefinidos
         List<String> roles = new ArrayList<>();
 
-        // Aquí puedes implementar la lógica para buscar los roles del usuario en tu base de datos o sistema de autenticación
+
         if ("admin".equals(username)) {
             // Si el usuario es "admin", asigna el rol "ADMIN"
             roles.add("ROLE_ADMIN");

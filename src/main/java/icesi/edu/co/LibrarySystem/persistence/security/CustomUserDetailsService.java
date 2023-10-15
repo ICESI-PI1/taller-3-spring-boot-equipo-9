@@ -15,7 +15,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
         if ("user".equals(username)) {
-            return new CustomUserDetails("user", "$2a$10$y0p1XGYpREbzeHvcoaLzrujC/tjF/ljQOnGB52gV.2gy5.hUqavWa", Arrays.asList(new SimpleGrantedAuthority("ROLE_USER")));
+            return new CustomUserDetails("user", "santiago", Arrays.asList(new SimpleGrantedAuthority("ROLE_USER")));
         } else {
             throw new UsernameNotFoundException("User not found with username: " + username);
         }
