@@ -37,4 +37,14 @@ public class BookController {
         return bookService.findByAuthor(id);
     }
 
+    @PutMapping("/{id}")
+    public Book update(@PathVariable Long id, @RequestBody Book book) {
+        return bookService.update(id, book);
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long id) {
+        bookService.delete(id);
+    }
+
 }

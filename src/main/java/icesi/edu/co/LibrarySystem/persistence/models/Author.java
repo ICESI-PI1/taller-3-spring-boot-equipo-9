@@ -15,9 +15,6 @@ public class Author {
     private String name;
     private String nationality;
 
-    // Getters and setters
-
-
     public Long getId() {
         return id;
     }

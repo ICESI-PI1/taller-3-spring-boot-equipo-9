@@ -1,33 +1,31 @@
 package icesi.edu.co.LibrarySystem.persistence.models;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
+import java.util.Date;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ManyToAny;
-
-
 
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
-@Data
 public class Book {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
-
-    @ManyToAny
-    private Data dataPublisher;
+    private Date publicationDate;
 
     @ManyToOne
     private Author author;
 
-    public Book(Book book) {
+    public Book() {
 
-        this(book.getId(), book.getTitle(),book.getDataPublisher(), book.getAuthor());
+    }
+
+    public Book(Long id, String title, Date publicationDate, Author author) {
+        this.id = id;
+        this.title = title;
+        this.publicationDate = publicationDate;
+        this.author = author;
     }
 
     public Long getId() {
@@ -46,12 +44,12 @@ public class Book {
         this.title = title;
     }
 
-    public Data getDataPublisher() {
-        return dataPublisher;
+    public Date getPublicationDate() {
+        return publicationDate;
     }
 
-    public void setDataPublisher(Data dataPublisher) {
-        this.dataPublisher = dataPublisher;
+    public void setPublicationDate(Date publicationDate) {
+        this.publicationDate = publicationDate;
     }
 
     public Author getAuthor() {
